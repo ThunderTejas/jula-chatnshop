@@ -4,6 +4,8 @@
 
 export const process = {
   env: {
-    API_KEY: 'YOUR_API_KEY_HERE', // Replace with your actual Google Gemini API Key
+    // Get your API key from: https://aistudio.google.com/apikey
+    // Replace 'YOUR_API_KEY_HERE' with your actual Gemini API key
+    API_KEY: 'AIzaSyBcQxmCBAuJRhnAVT4mGg6u6r-0TV5Scdo', // Example: 'AIzaSyC...'
   }
 };
