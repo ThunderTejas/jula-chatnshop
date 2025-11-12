@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { StarIcon, CheckCircleIcon, StarOutlineIcon } from './icons';
 import type { Product, Price } from '../data/products';
 import { CartContext } from '../context/CartContext';
@@ -51,6 +51,14 @@ const renderPrice = (price: Price) => {
 
 export const ProductCard: React.FC<{ product: Product, showAddToCart?: boolean }> = ({ product, showAddToCart = false }) => {
   const { addToCart } = useContext(CartContext);
+  const [isAdded, setIsAdded] = useState(false);
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    setIsAdded(true);
+    // Reset after 2 seconds
+    setTimeout(() => setIsAdded(false), 2000);
+  };
 
   return (
     <div className="bg-white flex flex-col h-full group border rounded-lg overflow-hidden shadow-sm">
@@ -114,10 +122,14 @@ export const ProductCard: React.FC<{ product: Product, showAddToCart?: boolean }
           </div>
           {showAddToCart && (
             <button 
-              onClick={() => addToCart(product)}
-              className="mt-4 w-full bg-[#d41f26] text-white font-bold py-2 px-4 rounded-md hover:bg-red-700 transition-colors"
+              onClick={handleAddToCart}
+              className={`mt-4 w-full font-bold py-2 px-4 rounded-md transition-colors ${
+                isAdded 
+                  ? 'bg-green-600 text-white' 
+                  : 'bg-[#d41f26] text-white hover:bg-red-700'
+              }`}
             >
-              Add to Cart
+              {isAdded ? 'Added to Cart ✓' : 'Add to Cart'}
             </button>
           )}
       </div>

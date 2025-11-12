@@ -43,6 +43,46 @@ interface Message {
   products?: Product[];
 }
 
+// Component to format chat text with markdown-like features
+const FormattedText: React.FC<{ text: string }> = ({ text }) => {
+  const lines = text.split('\n');
+  
+  return (
+    <div className="space-y-2">
+      {lines.map((line, index) => {
+        const trimmedLine = line.trim();
+        
+        // Skip empty lines
+        if (!trimmedLine) return <br key={index} />;
+        
+        // Handle bullet points (lines starting with * or -)
+        const isBullet = trimmedLine.startsWith('*') || trimmedLine.startsWith('-');
+        const content = isBullet ? trimmedLine.substring(1).trim() : trimmedLine;
+        
+        // Process bold text (**text**)
+        const parts = content.split(/(\*\*.*?\*\*)/g);
+        const formattedContent = parts.map((part, i) => {
+          if (part.startsWith('**') && part.endsWith('**')) {
+            return <strong key={i} className="font-bold">{part.slice(2, -2)}</strong>;
+          }
+          return <span key={i}>{part}</span>;
+        });
+        
+        if (isBullet) {
+          return (
+            <div key={index} className="flex items-start gap-2 ml-2">
+              <span className="text-gray-600 mt-0.5">•</span>
+              <span className="flex-1">{formattedContent}</span>
+            </div>
+          );
+        }
+        
+        return <p key={index} className="leading-relaxed">{formattedContent}</p>;
+      })}
+    </div>
+  );
+};
+
 const ChatAndShop: React.FC = () => {
   const [history, setHistory] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -63,7 +103,7 @@ const ChatAndShop: React.FC = () => {
           model: 'gemini-2.5-flash',
           config: {
             tools: tools,
-            systemInstruction: "You are a friendly shopping assistant for Jula. Your goal is to help users find products. Use the findProducts tool to search for items based on the user's request. If the user asks for something unrelated to products, politely state that you can only help with product searches.",
+            systemInstruction: "You are a friendly shopping assistant for Jula. Your goal is to help users find products. When users ask about a product category or type (like 'office', 'lighting', 'tools', etc.), use the findProducts tool to search for relevant items - be flexible and interpret their query broadly. For example, if they say 'office', search for 'office' to show office-related products. Only decline to help if they ask about something completely unrelated to shopping or products (like weather, news, etc.).",
           },
         });
         setChat(newChat);
@@ -140,7 +180,11 @@ const ChatAndShop: React.FC = () => {
             <div key={index} className={`flex items-start gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               {msg.role === 'model' && <BotIcon className="w-8 h-8 text-white bg-red-500 rounded-full p-1 flex-shrink-0" />}
               <div className={`max-w-xl p-4 rounded-2xl ${msg.role === 'user' ? 'bg-red-500 text-white rounded-br-none' : 'bg-gray-100 text-gray-800 rounded-bl-none'}`}>
-                <p className="whitespace-pre-wrap">{msg.text}</p>
+                {msg.role === 'user' ? (
+                  <p className="whitespace-pre-wrap">{msg.text}</p>
+                ) : (
+                  <FormattedText text={msg.text} />
+                )}
                 {msg.products && msg.products.length > 0 && (
                   <div className="mt-4">
                     <h4 className="font-bold mb-2">Here are the products I found:</h4>

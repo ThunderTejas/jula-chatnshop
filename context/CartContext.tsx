@@ -20,7 +20,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const addToCart = (product: Product) => {
     setCart(prevCart => [...prevCart, product]);
-    alert(`${product.name} has been added to your cart!`);
   };
 
   const removeFromCart = (productId: number) => {

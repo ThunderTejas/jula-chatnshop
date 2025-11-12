@@ -92,7 +92,7 @@ const products: Product[] = [
         availability: { online: true, stores: true, storeCount: 72 },
         infoSheet: { label: 'F' },
         category: 'Lighting'
-    },
+    }, //original
     // From TrainingCarousel
     {
         id: 7,
@@ -393,7 +393,7 @@ const products: Product[] = [
     },
     {
         id: 5,
-        image: 'https://assets.cdn.jula.com/preset:jpgoptimized/w:384/dmm3BWSV3/assetstream.aspx?assetid=102375&mediaformatid=50137&lastmodified=20250516103328',
+        image: 'https://assets.cdn.jula.com/preset:jpgoptimized/w:384/DigizuiteCore/LegacyService/api/assetstream/87084/50137?lastmodified=20250516103012',
         badge: { text: 'Smart Choice', type: 'red' },
         name: 'Light ramp LED 20" 180 W 16,200 lm',
         brand: 'Hamron',
@@ -404,19 +404,19 @@ const products: Product[] = [
         availability: { online: true, stores: true, storeCount: 72 },
         category: 'Car Accessories'
     },
-    {
-        id: 6,
-        image: 'https://assets.cdn.jula.com/preset:jpgoptimized/w:384/DigizuiteCore/LegacyService/api/assetstream/149392/50137?lastmodified=20250516103916',
-        name: 'Light garland 31 V 5 m IP44',
-        brand: 'EQUIP | Connectable System',
-        rating: 4,
-        reviews: 79,
-        price: { type: 'sale', current: '209.-', original: '299.-', save: 'Save 90.-' },
-        features: ['80 warm white lamps', 'Add-on bar'],
-        availability: { online: true, stores: true, storeCount: 72 },
-        infoSheet: { label: 'F' },
-        category: 'Lighting'
-    },
+    // {
+    //     id: 6,
+    //     image: 'https://assets.cdn.jula.com/preset:jpgoptimized/w:384/DigizuiteCore/LegacyService/api/assetstream/149392/50137?lastmodified=20250516103916',
+    //     name: 'Light garland 31 V 5 m IP44',
+    //     brand: 'EQUIP | Connectable System',
+    //     rating: 4,
+    //     reviews: 79,
+    //     price: { type: 'sale', current: '209.-', original: '299.-', save: 'Save 90.-' },
+    //     features: ['80 warm white lamps', 'Add-on bar'],
+    //     availability: { online: true, stores: true, storeCount: 72 },
+    //     infoSheet: { label: 'F' },
+    //     category: 'Lighting'
+    // },
 ];
 
 // De-duplicate based on ID, keeping the first occurrence
