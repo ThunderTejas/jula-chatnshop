@@ -1,23 +1,13 @@
 import React from 'react';
 import { FacebookIcon, InstagramIcon, YouTubeIcon } from './icons';
+import julaLogo from '../assets/jula-logo.png';
 
 const JulaLogo = ({ className }: { className?: string }) => (
-    <svg 
-        className={className} 
-        viewBox="0 0 258 90" 
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label="Jula Logo"
-    >
-        <path d="M25.8 1.5H232.2C245.3 1.5 256 12.2 256 25.3V64.7C256 77.8 245.3 88.5 232.2 88.5H25.8C12.7 88.5 2 77.8 2 64.7V25.3C2 12.2 12.7 1.5 25.8 1.5Z" fill="#fff" stroke="#d41f26" strokeWidth="3"></path>
-        <g fill="#d41f26" transform="translate(25, 12) scale(1)">
-            <path d="M37.8,22.2c-1.5-1.2-3.6-1.9-6.1-1.9c-5.1,0-9.1,2.9-9.1,7.8c0,3.2,1.9,5.8,5,7.2L22.9,54h6.9l5.1-8.3c1.2,0.2,2.5,0.4,3.9,0.4c4,0,7.3-1,9.8-2.8c3.1-2.3,4.7-5.9,4.7-10.2C52.3,27,47,22.2,37.8,22.2z M35.3,25.7c2.9,0,5.1,1.7,5.1,4.7c0,3.1-2.1,4.8-5.2,4.8c-1,0-1.9-0.1-2.7-0.4V26C33.5,25.8,34.4,25.7,35.3,25.7z"/>
-            <path d="M63.4,20.2h6.3v29.8h-6.3V20.2z"/>
-            <path d="M93.7,20.2h-6.8L75.5,50h6.7l2-5.5h10.3l2,5.5h6.7L93.7,20.2z M87.8,40.3l3-8.4l3,8.4H87.8z"/>
-            <path d="M129.8,20.2h6.3V38l10.9-17.8h7.2l-11.5,20.5l12.3,9.3h-7.3l-11.6-8.8v8.8h-6.3V20.2z"/>
-        </g>
-        <text x="222" y="34" fontFamily="Arial, sans-serif" fontSize="18" fill="#000">®</text>
-        <path d="M25.8 1.5H232.2C245.3 1.5 256 12.2 256 25.3V64.7C256 77.8 245.3 88.5 232.2 88.5H25.8C12.7 88.5 2 77.8 2 64.7V25.3C2 12.2 12.7 1.5 25.8 1.5Z" fill="none" stroke="#000" strokeWidth="1"></path>
-    </svg>
+    <img 
+        src={julaLogo} 
+        alt="Jula Logo" 
+        className={className}
+    />
 );
 
 const FooterLinkColumn: React.FC<{ title: string; links: { text: string; href: string }[] }> = ({ title, links }) => (
