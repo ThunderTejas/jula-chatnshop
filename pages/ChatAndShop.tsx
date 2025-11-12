@@ -9,13 +9,81 @@ import { process } from '../process.env';
 // In a real app, this would be an API call, but we'll simulate it here.
 const findProducts = (query: string): Product[] => {
   if (!query) return [];
-  const lowerCaseQuery = query.toLowerCase();
+  const lowerCaseQuery = query.toLowerCase().trim();
+  
+  // // Define search term synonyms and expansions
+  // const synonyms: Record<string, string[]> = {
+  //   'light': ['light', 'lighting', 'lamp', 'led', 'luminaire', 'lights'],
+  //   'bike': ['bike', 'bicycle', 'cycling','biking'],
+  //   'chair': ['chair', 'seat', 'stool'],
+  //   'desk': ['desk', 'table', 'workstation'],
+  //   'tool': ['tool', 'equipment'],
+    
+  // };
+  const synonyms: Record<string, string[]> = {
+    // 🔦 Lighting & Electrical
+    'light': ['light', 'lighting', 'lamp', 'led', 'luminaire', 'garland', 'illumination', 'string light', 'bulb'],
+    'christmas': ['christmas', 'xmas', 'holiday', 'tree', 'decor', 'festive', 'decoration', 'ornament'],
+    'tree': ['tree', 'christmas tree', 'pine', 'artificial tree', 'decor tree'],
+
+    // 💪 Training & Fitness
+    'training': ['training', 'workout', 'exercise', 'fitness', 'gym', 'home gym'],
+    'dumbbell': ['dumbbell', 'weight', 'barbell', 'lifting', 'weights', 'strength'],
+    'treadmill': ['treadmill', 'running machine', 'runner', 'cardio', 'jogging', 'fitness machine'],
+    'multigym': ['multigym', 'gym station', 'workout station', 'fitness machine'],
+    
+    // 🚲 Leisure & Bikes
+    'bike': ['bike', 'bicycle', 'cycling', 'mountain bike', 'bmx', 'ride', 'scooter'],
+    'scooter': ['scooter', 'kick scooter', 'trick scooter', 'ride-on'],
+
+    // 🎣 Fishing & Outdoor
+    'fishing': ['fishing', 'angling', 'fish', 'bait', 'fisherman', 'rod', 'reel'],
+    'wader': ['wader', 'wading trousers', 'boots', 'gear', 'outdoor wear'],
+    'jig': ['jig', 'lure', 'bait', 'fishing tackle'],
+    'sled': ['sled', 'sledge', 'ice fishing sled', 'gear carrier'],
+    'bag': ['bag', 'carry bag', 'fishing bag', 'storage'],
+
+    // 🏢 Office Supplies
+    'office': ['office', 'workspace', 'work', 'stationery', 'supplies'],
+    'paper': ['paper', 'copy paper', 'sheet', 'a4'],
+    'whiteboard': ['whiteboard', 'board', 'marker board', 'dry erase'],
+    'magnet': ['magnet', 'magnetic', 'magnetic accessory'],
+    'desk': ['desk', 'table', 'workstation', 'mat'],
+    'marker': ['marker', 'pen', 'write', 'notepad'],
+
+    // 🧰 Tools & Car Accessories
+    'tool': ['tool', 'equipment', 'meec', 'jack', 'hand tool', 'machine'],
+    'jack': ['jack', 'car jack', 'hydraulic jack', 'lifting'],
+    'car': ['car', 'automotive', 'vehicle', 'auto', 'accessory'],
+    'lamp': ['lamp', 'led lamp', 'light bar', 'headlamp', 'beam'],
+
+
+    // 🧾 General keywords
+    'new': ['new', 'latest', 'fresh', 'newness'],
+    'sale': ['sale', 'discount', 'offer', 'deal', 'bargain'],
+    'smart': ['smart', 'choice', 'recommended', 'best pick'],
+    'brand': ['brand', 'make', 'manufacturer'],
+    'rating': ['rating', 'reviews', 'stars', 'feedback'],
+    'online': ['online', 'store', 'shop', 'buy', 'purchase']
+  };
+
+  
+  // Find which synonym group matches (if any)
+  let searchTerms = [lowerCaseQuery];
+  for (const [key, values] of Object.entries(synonyms)) {
+    if (lowerCaseQuery.includes(key) || values.some(v => lowerCaseQuery.includes(v))) {
+      searchTerms = values;
+      break;
+    }
+  }
   
   return allProducts.filter(p => 
-    p.name.toLowerCase().includes(lowerCaseQuery) ||
-    p.brand.toLowerCase().includes(lowerCaseQuery) ||
-    p.category.toLowerCase().includes(lowerCaseQuery) ||
-    p.features.some(f => f.toLowerCase().includes(lowerCaseQuery))
+    searchTerms.some(term => 
+      p.name.toLowerCase().includes(term) ||
+      p.brand.toLowerCase().includes(term) ||
+      p.category.toLowerCase().includes(term) ||
+      p.features.some(f => f.toLowerCase().includes(term))
+    )
   );
 };
 
@@ -103,7 +171,7 @@ const ChatAndShop: React.FC = () => {
           model: 'gemini-2.5-flash',
           config: {
             tools: tools,
-            systemInstruction: "You are a friendly shopping assistant for Jula. Your goal is to help users find products. When users ask about a product category or type (like 'office', 'lighting', 'tools', etc.), use the findProducts tool to search for relevant items - be flexible and interpret their query broadly. For example, if they say 'office', search for 'office' to show office-related products. Only decline to help if they ask about something completely unrelated to shopping or products (like weather, news, etc.).",
+            systemInstruction: "You are a friendly shopping assistant for Jula. ALWAYS use the findProducts tool to search and display products - never just describe them in text. When users ask for products (even with filters like 'latest', 'new', 'best'), extract the main product category and search for it. For example: 'latest office products' → search 'office', 'new bikes' → search 'bike', 'best jackets' → search 'jacket'. Ignore filters like 'latest', 'new', 'popular' since we can't filter by those - just show all products in that category. CRITICAL: You must call findProducts tool for every product request, never just list products in text format. Only decline if the request is completely unrelated to products.",
           },
         });
         setChat(newChat);
@@ -222,10 +290,12 @@ const ChatAndShop: React.FC = () => {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="e.g., 'Show me some winter jackets...'"
+              placeholder="What do you have on your mind today?"
               className="flex-grow p-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-red-400 transition"
               disabled={isLoading || !chat}
             />
+
+            
             <button
               type="submit"
               className="bg-[#d41f26] text-white rounded-full w-12 h-12 flex items-center justify-center flex-shrink-0 hover:bg-red-700 disabled:bg-gray-400 transition"
